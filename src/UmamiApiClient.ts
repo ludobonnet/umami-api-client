@@ -11,7 +11,6 @@ import {
 import * as Umami from 'types';
 import debug from 'debug';
 import { UmamiApiError } from './UmamiApiError';
-import { SearchResult } from 'types';
 
 export const log = debug('umami:api-client');
 
@@ -149,9 +148,7 @@ export class UmamiApiClient {
     return this.get(`users/${userId}`);
   }
 
-  async getUsers(
-    params: Umami.UserSearchParams,
-  ): Promise<ApiResponse> {
+  async getUsers(params: Umami.UserSearchParams): Promise<ApiResponse> {
     return this.get(`users`, params);
   }
 
@@ -165,17 +162,11 @@ export class UmamiApiClient {
     return this.get(`users/${userId}/usage`, params);
   }
 
-  async getUserTeams(
-    userId: string,
-    params?: Umami.TeamSearchParams,
-  ): Promise<ApiResponse> {
+  async getUserTeams(userId: string, params?: Umami.TeamSearchParams): Promise<ApiResponse> {
     return this.get(`users/${userId}/teams`, params);
   }
 
-  async getUserWebsites(
-    userId: string,
-    params?: Umami.WebsiteSearchParams,
-  ): Promise<ApiResponse> {
+  async getUserWebsites(userId: string, params?: Umami.WebsiteSearchParams): Promise<ApiResponse> {
     return this.get(`users/${userId}/websites`, params);
   }
 
@@ -215,9 +206,7 @@ export class UmamiApiClient {
     return this.del(`reports/${reportId}`);
   }
 
-  async getReports(
-    params?: Umami.SearchParams,
-  ): Promise<ApiResponse> {
+  async getReports(params?: Umami.SearchParams): Promise<ApiResponse> {
     return this.get(`reports`, params);
   }
 
@@ -260,9 +249,7 @@ export class UmamiApiClient {
     return this.post(`websites/${websiteId}/reset`);
   }
 
-  async getWebsites(
-    params?: Umami.WebsiteSearchParams,
-  ): Promise<ApiResponse> {
+  async getWebsites(params?: Umami.WebsiteSearchParams): Promise<ApiResponse> {
     return this.get(`websites`, params);
   }
 
@@ -338,10 +325,7 @@ export class UmamiApiClient {
     return this.get(`websites/${websiteId}/sessions/stats`, params);
   }
 
-  async getWebsiteSession(
-    websiteId: string,
-    sessionId: string,
-  ): Promise<ApiResponse> {
+  async getWebsiteSession(websiteId: string, sessionId: string): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/sessions/${sessionId}`);
   }
 
@@ -356,10 +340,7 @@ export class UmamiApiClient {
     return this.get(`websites/${websiteId}/sessions/${sessionId}/activity`, params);
   }
 
-  async getSessionData(
-    websiteId: string,
-    sessionId: string,
-  ): Promise<ApiResponse> {
+  async getSessionData(websiteId: string, sessionId: string): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/sessions/${sessionId}/properties`);
   }
 
@@ -461,9 +442,7 @@ export class UmamiApiClient {
     return this.get(`teams/${teamId}`);
   }
 
-  async getTeams(
-    params?: Umami.TeamSearchParams,
-  ): Promise<ApiResponse> {
+  async getTeams(params?: Umami.TeamSearchParams): Promise<ApiResponse> {
     return this.get(`teams`, params);
   }
 
@@ -471,10 +450,7 @@ export class UmamiApiClient {
     return this.post(`teams/join`, data);
   }
 
-  async getTeamUsers(
-    teamId: string,
-    params?: Umami.UserSearchParams,
-  ): Promise<ApiResponse> {
+  async getTeamUsers(teamId: string, params?: Umami.UserSearchParams): Promise<ApiResponse> {
     return this.get(`teams/${teamId}/users`, params);
   }
 
@@ -501,10 +477,7 @@ export class UmamiApiClient {
     return this.del(`teams/${teamId}/users/${userId}`);
   }
 
-  async getTeamWebsites(
-    teamId: string,
-    params?: Umami.WebsiteSearchParams,
-  ): Promise<ApiResponse> {
+  async getTeamWebsites(teamId: string, params?: Umami.WebsiteSearchParams): Promise<ApiResponse> {
     return this.get(`teams/${teamId}/websites`, params);
   }
 
@@ -553,7 +526,10 @@ export class UmamiApiClient {
     return this.get('me/teams', params);
   }
 
-  async updateMyPassword(data: { currentPassword: string; newPassword: string }): Promise<ApiResponse> {
+  async updateMyPassword(data: {
+    currentPassword: string;
+    newPassword: string;
+  }): Promise<ApiResponse> {
     return this.post('me/password', data);
   }
 
@@ -784,7 +760,7 @@ export class UmamiApiClient {
       },
       {
         path: /^realtime\/[0-9a-f-]+$/,
-        get: async ([, id], data: { startAt: number }) => this.getRealtime(id, data),
+        get: async ([, id]: string[], data: { startAt: number }) => this.getRealtime(id, data),
       },
       {
         path: /^reports$/,
@@ -895,9 +871,9 @@ export class UmamiApiClient {
       },
       {
         path: /^reports\/[0-9a-f-]+$/,
-        get: async ([, id]) => this.getReport(id),
+        get: async ([, id]: string[]) => this.getReport(id),
         post: async (
-          [, id],
+          [, id]: string[],
           data: {
             websiteId: string;
             type: string;
@@ -906,7 +882,7 @@ export class UmamiApiClient {
             parameters: string;
           },
         ) => this.updateReport(id, data),
-        delete: async ([, id]) => this.deleteReport(id),
+        delete: async ([, id]: string[]) => this.deleteReport(id),
       },
       {
         path: /^teams$/,
@@ -1227,18 +1203,18 @@ export class UmamiApiClient {
       },
       {
         path: /^websites\/[0-9a-f-]+\/values$/,
-        get: async (
-          [, id]: string[],
-          data: { startAt: number; endAt: number },
-        ) => this.getWebsiteValues(id, data),
+        get: async ([, id]: string[], data: { startAt: number; endAt: number }) =>
+          this.getWebsiteValues(id, data),
       },
     ];
 
     const route = routes.find(({ path }) => url.match(path));
     const key = method.toLowerCase();
 
-    if (route && route[key]) {
-      return route[key](url.split('/'), data);
+    if (route && (route as Record<string, unknown>)[key]) {
+      return (
+        route as unknown as Record<string, (parts: string[], data: unknown) => Promise<ApiResponse>>
+      )[key](url.split('/'), data);
     }
 
     return { ok: false, status: 404, error: { status: 404, message: `Not Found: ${url}` } };

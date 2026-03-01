@@ -185,12 +185,12 @@ export class UmamiApiClient {
     return this.get(`share/${shareId}`);
   }
 
-  async getReport(reportId): Promise<ApiResponse> {
+  async getReport(reportId: string): Promise<ApiResponse> {
     return this.get(`reports/${reportId}`);
   }
 
   async updateReport(
-    reportId,
+    reportId: string,
     data: {
       websiteId: string;
       type: string;
@@ -202,7 +202,7 @@ export class UmamiApiClient {
     return this.post(`reports/${reportId}`, data);
   }
 
-  async deleteReport(reportId): Promise<ApiResponse> {
+  async deleteReport(reportId: string): Promise<ApiResponse> {
     return this.del(`reports/${reportId}`);
   }
 
@@ -259,6 +259,10 @@ export class UmamiApiClient {
 
   async getWebsiteActive(websiteId: string): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/active`);
+  }
+
+  async getWebsiteDateRange(websiteId: string): Promise<ApiResponse> {
+    return this.get(`websites/${websiteId}/daterange`);
   }
 
   async getWebsiteReports(websiteId: string): Promise<ApiResponse> {
@@ -975,11 +979,11 @@ export class UmamiApiClient {
       },
       {
         path: /^websites\/[0-9a-f-]+\/active$/,
-        get: async ([, id]: any) => this.getWebsiteActive(id),
+        get: async ([, id]: string[]) => this.getWebsiteActive(id),
       },
       {
         path: /^websites\/[0-9a-f-]+\/daterange$/,
-        get: async ([, id]: any) => this.getWebsiteActive(id),
+        get: async ([, id]: string[]) => this.getWebsiteDateRange(id),
       },
       {
         path: /^websites\/[0-9a-f-]+\/event-data\/events$/,
@@ -1214,12 +1218,9 @@ export class UmamiApiClient {
       },
       {
         path: /^websites\/[0-9a-f-]+\/values$/,
-        pogetst: (
-          [, id]: any,
-          data: {
-            startAt: number;
-            endAt: number;
-          },
+        get: async (
+          [, id]: string[],
+          data: { startAt: number; endAt: number },
         ) => this.getWebsiteValues(id, data),
       },
     ];

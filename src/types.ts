@@ -50,6 +50,11 @@ export interface WebsiteActive {
   x: number;
 }
 
+export interface WebsiteDateRange {
+  min: string;
+  max: string;
+}
+
 export interface WebsiteMetric {
   x: string;
   y: number;
@@ -97,9 +102,9 @@ export interface RealtimeInit {
 }
 
 export interface RealtimeUpdate {
-  pageviews: any[];
-  sessions: any[];
-  events: any[];
+  pageviews: WebsitePageview[];
+  sessions: WebsiteSession[];
+  events: WebsiteEvent[];
   timestamp: number;
 }
 
@@ -123,6 +128,19 @@ export interface SessionData {
   numberValue: number;
   dateValue: Date;
   createdAt: Date;
+}
+
+export interface WebsitePageview {
+  id: string;
+  websiteId: string;
+  sessionId: string;
+  createdAt: Date;
+  urlPath: string;
+  urlQuery: string;
+  referrerPath: string;
+  referrerQuery: string;
+  referrerDomain: string;
+  pageTitle: string;
 }
 
 export interface WebsiteEvent {
@@ -157,7 +175,7 @@ export interface WebsiteSession {
   visits: number;
   views: number;
   events?: number;
-  toataltime?: number;
+  totaltime?: number;
   createdAt: Date;
 }
 
@@ -191,8 +209,6 @@ export interface WebsiteDataValue {
   value: string;
   total: number;
 }
-
-export interface Empty {}
 
 export interface WebsiteSearchParams extends SearchParams {
   userId?: string;

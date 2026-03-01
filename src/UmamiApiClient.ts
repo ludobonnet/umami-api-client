@@ -10,6 +10,7 @@ import {
 } from 'next-basics';
 import * as Umami from 'types';
 import debug from 'debug';
+import { UmamiApiError } from './UmamiApiError';
 import { SearchResult } from 'types';
 
 export const log = debug('umami:api-client');
@@ -64,38 +65,66 @@ export class UmamiApiClient {
     return headers;
   }
 
-  get(url: string, params?: object, headers?: object) {
+  async get(url: string, params?: object, headers?: object): Promise<ApiResponse> {
     const dest = buildUrl(`${this.apiEndpoint}/${url}`, params);
 
     log(`GET ${dest}`, params, headers);
 
-    return httpGet(dest, undefined, {
-      ...this.getHeaders(headers),
-    });
+    try {
+      return await httpGet(dest, undefined, {
+        ...this.getHeaders(headers),
+      });
+    } catch (err: unknown) {
+      if (err instanceof UmamiApiError) throw err;
+      const status = (err as { status?: number }).status ?? 0;
+      const message = err instanceof Error ? err.message : String(err);
+      throw new UmamiApiError(message, status, err);
+    }
   }
 
-  post(url: string, data?: object, headers?: object) {
+  async post(url: string, data?: object, headers?: object): Promise<ApiResponse> {
     const dest = `${this.apiEndpoint}/${url}`;
 
     log(`POST ${dest}`, data, headers);
 
-    return httpPost(dest, data, this.getHeaders(headers));
+    try {
+      return await httpPost(dest, data, this.getHeaders(headers));
+    } catch (err: unknown) {
+      if (err instanceof UmamiApiError) throw err;
+      const status = (err as { status?: number }).status ?? 0;
+      const message = err instanceof Error ? err.message : String(err);
+      throw new UmamiApiError(message, status, err);
+    }
   }
 
-  put(url: string, params?: object, headers?: object) {
+  async put(url: string, params?: object, headers?: object): Promise<ApiResponse> {
     const dest = `${this.apiEndpoint}/${url}`;
 
     log(`PUT ${dest}`, params, headers);
 
-    return httpPut(dest, params, this.getHeaders(headers));
+    try {
+      return await httpPut(dest, params, this.getHeaders(headers));
+    } catch (err: unknown) {
+      if (err instanceof UmamiApiError) throw err;
+      const status = (err as { status?: number }).status ?? 0;
+      const message = err instanceof Error ? err.message : String(err);
+      throw new UmamiApiError(message, status, err);
+    }
   }
 
-  del(url: string, params?: object, headers?: object) {
+  async del(url: string, params?: object, headers?: object): Promise<ApiResponse> {
     const dest = buildUrl(`${this.apiEndpoint}/${url}`, params);
 
     log(`DELETE ${dest}`, params, headers);
 
-    return httpDelete(dest, undefined, this.getHeaders(headers));
+    try {
+      return await httpDelete(dest, undefined, this.getHeaders(headers));
+    } catch (err: unknown) {
+      if (err instanceof UmamiApiError) throw err;
+      const status = (err as { status?: number }).status ?? 0;
+      const message = err instanceof Error ? err.message : String(err);
+      throw new UmamiApiError(message, status, err);
+    }
   }
 
   async createUser(data: {

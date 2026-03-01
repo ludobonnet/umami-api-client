@@ -161,7 +161,7 @@ export class UmamiApiClient {
       startAt: number;
       endAt: number;
     },
-  ) {
+  ): Promise<ApiResponse> {
     return this.get(`users/${userId}/usage`, params);
   }
 
@@ -533,27 +533,27 @@ export class UmamiApiClient {
     return this.del(`teams/${teamId}`);
   }
 
-  async login(username: string, password: string) {
+  async login(username: string, password: string): Promise<ApiResponse> {
     return this.post('auth/login', { username, password });
   }
 
-  async verify() {
+  async verify(): Promise<ApiResponse> {
     return this.get('auth/verify');
   }
 
-  async getMe() {
+  async getMe(): Promise<ApiResponse> {
     return this.get('me');
   }
 
-  async getMyWebsites(params?: Umami.WebsiteSearchParams) {
+  async getMyWebsites(params?: Umami.WebsiteSearchParams): Promise<ApiResponse> {
     return this.get('me/websites', params);
   }
 
-  async getMyTeams(params?: Umami.TeamSearchParams) {
+  async getMyTeams(params?: Umami.TeamSearchParams): Promise<ApiResponse> {
     return this.get('me/teams', params);
   }
 
-  async updateMyPassword(data: { currentPassword: string; newPassword: string }) {
+  async updateMyPassword(data: { currentPassword: string; newPassword: string }): Promise<ApiResponse> {
     return this.post('me/password', data);
   }
 
@@ -562,7 +562,7 @@ export class UmamiApiClient {
     data: {
       startAt: number;
     },
-  ) {
+  ): Promise<ApiResponse> {
     return this.get(`realtime/${websiteId}`, data);
   }
 
@@ -574,7 +574,7 @@ export class UmamiApiClient {
       event?: string;
     },
   ): Promise<ApiResponse> {
-    return this.get(`websites/${websiteId}/event-data/events`, { websiteId, ...params });
+    return this.get(`websites/${websiteId}/event-data/events`, params);
   }
 
   async getEventDataStats(
@@ -584,7 +584,7 @@ export class UmamiApiClient {
       endAt: number;
     },
   ): Promise<ApiResponse> {
-    return this.get(`websites/${websiteId}/event-data/stats`, { websiteId, ...params });
+    return this.get(`websites/${websiteId}/event-data/stats`, params);
   }
 
   async getEventDataValues(
@@ -596,7 +596,7 @@ export class UmamiApiClient {
       propertyName: string;
     },
   ): Promise<ApiResponse> {
-    return this.get(`websites/${websiteId}/event-data/values`, { websiteId, ...params });
+    return this.get(`websites/${websiteId}/event-data/values`, params);
   }
 
   async getEventDataFields(
@@ -606,7 +606,7 @@ export class UmamiApiClient {
       endAt: number;
     },
   ): Promise<ApiResponse> {
-    return this.get(`websites/${websiteId}/event-data/fields`, { websiteId, ...params });
+    return this.get(`websites/${websiteId}/event-data/fields`, params);
   }
 
   async getSessionDataProperties(
@@ -616,7 +616,7 @@ export class UmamiApiClient {
       endAt: number;
     },
   ): Promise<ApiResponse> {
-    return this.get(`websites/${websiteId}/session-data/properties`, { websiteId, ...params });
+    return this.get(`websites/${websiteId}/session-data/properties`, params);
   }
 
   async getSessionDataValues(
@@ -628,7 +628,7 @@ export class UmamiApiClient {
       propertyName: string;
     },
   ): Promise<ApiResponse> {
-    return this.get(`websites/${websiteId}/session-data/values`, { websiteId, ...params });
+    return this.get(`websites/${websiteId}/session-data/values`, params);
   }
 
   async transferWebsite(
@@ -637,8 +637,8 @@ export class UmamiApiClient {
       userId?: string;
       teamId?: string;
     },
-  ) {
-    return this.post(`websites/${websiteId}/transfer`, { websiteId, ...params });
+  ): Promise<ApiResponse> {
+    return this.post(`websites/${websiteId}/transfer`, params);
   }
 
   async runFunnelReport(data: {
@@ -649,7 +649,7 @@ export class UmamiApiClient {
       startDate: string;
       endDate: string;
     };
-  }) {
+  }): Promise<ApiResponse> {
     return this.post(`reports/funnel`, data);
   }
 
@@ -662,49 +662,49 @@ export class UmamiApiClient {
     fields: { name: string; type: string; label: string }[];
     filters: { name: string; type: string; filter: string; value: string }[];
     groups: { name: string; type: string }[];
-  }) {
+  }): Promise<ApiResponse> {
     return this.post(`reports/insights`, data);
   }
 
   async runRetentionReport(data: {
     websiteId: string;
     dateRange: { startDate: string; endDate: string; timezone: string };
-  }) {
+  }): Promise<ApiResponse> {
     return this.post(`reports/retention`, data);
   }
 
   async runUTMReport(data: {
     websiteId: string;
     dateRange: { startDate: string; endDate: string };
-  }) {
+  }): Promise<ApiResponse> {
     return this.post(`reports/utm`, data);
   }
 
   async runGoalsReport(data: {
     websiteId: string;
     dateRange: { startDate: string; endDate: string };
-  }) {
+  }): Promise<ApiResponse> {
     return this.post(`reports/goals`, data);
   }
 
   async runJourneyReport(data: {
     websiteId: string;
     dateRange: { startDate: string; endDate: string };
-  }) {
+  }): Promise<ApiResponse> {
     return this.post(`reports/journey`, data);
   }
 
   async runRevenueReport(data: {
     websiteId: string;
     dateRange: { startDate: string; endDate: string };
-  }) {
+  }): Promise<ApiResponse> {
     return this.post(`reports/revenue`, data);
   }
 
   async runAttributionReport(data: {
     websiteId: string;
     dateRange: { startDate: string; endDate: string };
-  }) {
+  }): Promise<ApiResponse> {
     return this.post(`reports/attribution`, data);
   }
 
@@ -721,7 +721,7 @@ export class UmamiApiClient {
       website: string;
       name: string;
     };
-  }) {
+  }): Promise<ApiResponse> {
     const { type, payload } = data;
 
     return this.post('send', { type, payload });
@@ -742,11 +742,11 @@ export class UmamiApiClient {
         name: string;
       };
     }[],
-  ) {
+  ): Promise<ApiResponse> {
     return this.post('batch', data);
   }
 
-  async heartbeat() {
+  async heartbeat(): Promise<ApiResponse> {
     return this.get('heartbeat');
   }
 

@@ -6,6 +6,10 @@ const config = {
   testEnvironment: 'node',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   testMatch: ['**/__tests__/**/*.test.ts'],
+  moduleNameMapper: {
+    '^types$': '<rootDir>/src/types',
+    '^UmamiApiClient$': '<rootDir>/src/UmamiApiClient',
+  },
 };
 
 module.exports = config;

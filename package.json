@@ -28,6 +28,7 @@
     "url": "git+https://github.com/umami-software/api-client.git"
   },
   "scripts": {
+    "prepare": "rollup -c",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "lint": "eslint src",

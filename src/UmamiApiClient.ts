@@ -37,6 +37,10 @@ export class UmamiApiClient {
     return this._authToken;
   }
 
+  set authToken(value: string | undefined) {
+    this._authToken = value;
+  }
+
   constructor(options: UmamiApiClientOptions) {
     const { userId, secret, apiEndpoint = '', apiKey } = options;
 

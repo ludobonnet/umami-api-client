@@ -25,17 +25,25 @@ export interface UmamiApiClientOptions {
 }
 
 export class UmamiApiClient {
-  apiEndpoint: string;
-  secret: string;
-  authToken?: string;
-  apiKey?: string;
+  private _apiEndpoint: string;
+  private _secret: string;
+  private _authToken?: string;
+  private _apiKey?: string;
+
+  get apiEndpoint(): string {
+    return this._apiEndpoint;
+  }
+
+  get authToken(): string | undefined {
+    return this._authToken;
+  }
 
   constructor(options: UmamiApiClientOptions) {
     const { userId, secret, apiEndpoint = '', apiKey } = options;
 
-    this.apiEndpoint = apiEndpoint;
-    this.secret = hash(secret || '');
-    this.apiKey = apiKey;
+    this._apiEndpoint = apiEndpoint;
+    this._secret = hash(secret || '');
+    this._apiKey = apiKey;
 
     if (userId) {
       this.setAuthToken({ userId });
@@ -43,29 +51,30 @@ export class UmamiApiClient {
   }
 
   setAuthToken(data: object) {
-    this.authToken = createSecureToken(data, this.secret);
+    this._authToken = createSecureToken(data, this._secret);
   }
 
-  setSecret(secret: string) {
-    this.secret = secret;
+  setSecret(secret: string): void {
+    this._secret = hash(secret || '');
   }
 
   setApiEndPoint(url: string) {
-    this.apiEndpoint = url;
+    this._apiEndpoint = url;
   }
 
-  getHeaders(headers: any = {}) {
-    if (this.authToken) {
-      headers.authorization = `Bearer ${this.authToken}`;
+  getHeaders(headers: Record<string, string> = {}): Record<string, string> {
+    const result = { ...headers };
+    if (this._authToken) {
+      result.authorization = `Bearer ${this._authToken}`;
     }
-    if (this.apiKey) {
-      headers[API_KEY_HEADER] = this.apiKey;
+    if (this._apiKey) {
+      result[API_KEY_HEADER] = this._apiKey;
     }
 
-    return headers;
+    return result;
   }
 
-  async get(url: string, params?: object, headers?: object): Promise<ApiResponse> {
+  async get(url: string, params?: object, headers?: Record<string, string>): Promise<ApiResponse> {
     const dest = buildUrl(`${this.apiEndpoint}/${url}`, params);
 
     log(`GET ${dest}`, params, headers);
@@ -82,7 +91,7 @@ export class UmamiApiClient {
     }
   }
 
-  async post(url: string, data?: object, headers?: object): Promise<ApiResponse> {
+  async post(url: string, data?: object, headers?: Record<string, string>): Promise<ApiResponse> {
     const dest = `${this.apiEndpoint}/${url}`;
 
     log(`POST ${dest}`, data, headers);
@@ -97,7 +106,7 @@ export class UmamiApiClient {
     }
   }
 
-  async put(url: string, params?: object, headers?: object): Promise<ApiResponse> {
+  async put(url: string, params?: object, headers?: Record<string, string>): Promise<ApiResponse> {
     const dest = `${this.apiEndpoint}/${url}`;
 
     log(`PUT ${dest}`, params, headers);
@@ -112,7 +121,7 @@ export class UmamiApiClient {
     }
   }
 
-  async del(url: string, params?: object, headers?: object): Promise<ApiResponse> {
+  async del(url: string, params?: object, headers?: Record<string, string>): Promise<ApiResponse> {
     const dest = buildUrl(`${this.apiEndpoint}/${url}`, params);
 
     log(`DELETE ${dest}`, params, headers);

@@ -13,7 +13,10 @@ describe('UmamiApiClient', () => {
 
   describe('setSecret', () => {
     it('should hash the secret when set via setSecret', () => {
-      const client1 = new UmamiApiClient({ apiEndpoint: 'http://example.com', secret: 'my-secret' });
+      const client1 = new UmamiApiClient({
+        apiEndpoint: 'http://example.com',
+        secret: 'my-secret',
+      });
       const client2 = new UmamiApiClient({ apiEndpoint: 'http://example.com', secret: '' });
       client2.setSecret('my-secret');
       // Both clients should have the same hashed secret

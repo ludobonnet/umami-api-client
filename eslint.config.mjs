@@ -41,5 +41,13 @@ export default [
       'prettier/prettier': 'error',
     },
   },
+  {
+    files: ['**/__tests__/**/*.ts', '**/*.test.ts'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+  },
   prettierConfig,
 ];

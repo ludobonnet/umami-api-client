@@ -33,7 +33,7 @@ export class UmamiApiClient {
     const { userId, secret, apiEndpoint = '', apiKey } = options;
 
     this.apiEndpoint = apiEndpoint;
-    this.secret = hash(secret);
+    this.secret = hash(secret || '');
     this.apiKey = apiKey;
 
     if (userId) {
@@ -103,17 +103,17 @@ export class UmamiApiClient {
     username: string;
     password: string;
     role?: string;
-  }): Promise<ApiResponse<Umami.User>> {
+  }): Promise<ApiResponse> {
     return this.post(`users`, data);
   }
 
-  async getUser(userId: string): Promise<ApiResponse<Umami.User>> {
+  async getUser(userId: string): Promise<ApiResponse> {
     return this.get(`users/${userId}`);
   }
 
   async getUsers(
     params: Umami.UserSearchParams,
-  ): Promise<ApiResponse<Umami.SearchResult<Umami.User[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`users`, params);
   }
 
@@ -130,33 +130,33 @@ export class UmamiApiClient {
   async getUserTeams(
     userId: string,
     params?: Umami.TeamSearchParams,
-  ): Promise<ApiResponse<Umami.SearchResult<Umami.Team[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`users/${userId}/teams`, params);
   }
 
   async getUserWebsites(
     userId: string,
     params?: Umami.WebsiteSearchParams,
-  ): Promise<ApiResponse<Umami.SearchResult<Umami.Website[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`users/${userId}/websites`, params);
   }
 
-  async deleteUser(userId: string): Promise<ApiResponse<Umami.Empty>> {
+  async deleteUser(userId: string): Promise<ApiResponse> {
     return this.del(`users/${userId}`);
   }
 
   async updateUser(
     userId: string,
     data: { username: string; password: string },
-  ): Promise<ApiResponse<Umami.User>> {
+  ): Promise<ApiResponse> {
     return this.post(`users/${userId}`, data);
   }
 
-  async getShare(shareId: string): Promise<ApiResponse<Umami.Share>> {
+  async getShare(shareId: string): Promise<ApiResponse> {
     return this.get(`share/${shareId}`);
   }
 
-  async getReport(reportId): Promise<ApiResponse<Umami.Report>> {
+  async getReport(reportId): Promise<ApiResponse> {
     return this.get(`reports/${reportId}`);
   }
 
@@ -169,17 +169,17 @@ export class UmamiApiClient {
       description: string;
       parameters: string;
     },
-  ): Promise<ApiResponse<Umami.Report>> {
+  ): Promise<ApiResponse> {
     return this.post(`reports/${reportId}`, data);
   }
 
-  async deleteReport(reportId): Promise<ApiResponse<Umami.Report>> {
+  async deleteReport(reportId): Promise<ApiResponse> {
     return this.del(`reports/${reportId}`);
   }
 
   async getReports(
     params?: Umami.SearchParams,
-  ): Promise<ApiResponse<SearchResult<Umami.Report[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`reports`, params);
   }
 
@@ -191,15 +191,15 @@ export class UmamiApiClient {
     parameters: {
       [key: string]: any;
     };
-  }): Promise<ApiResponse<Umami.Report>> {
+  }): Promise<ApiResponse> {
     return this.post(`reports`, data);
   }
 
-  async createWebsite(data: { name: string; domain: string }): Promise<ApiResponse<Umami.Website>> {
+  async createWebsite(data: { name: string; domain: string }): Promise<ApiResponse> {
     return this.post(`websites`, data);
   }
 
-  async getWebsite(websiteId: string): Promise<ApiResponse<Umami.Website>> {
+  async getWebsite(websiteId: string): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}`);
   }
 
@@ -210,36 +210,36 @@ export class UmamiApiClient {
       domain: string;
       shareId: string;
     },
-  ): Promise<ApiResponse<Umami.Empty>> {
+  ): Promise<ApiResponse> {
     return this.post(`websites/${websiteId}`, params);
   }
 
-  async deleteWebsite(websiteId: string): Promise<ApiResponse<Umami.Empty>> {
+  async deleteWebsite(websiteId: string): Promise<ApiResponse> {
     return this.del(`websites/${websiteId}`);
   }
 
-  async resetWebsite(websiteId: string): Promise<ApiResponse<Umami.Empty>> {
+  async resetWebsite(websiteId: string): Promise<ApiResponse> {
     return this.post(`websites/${websiteId}/reset`);
   }
 
   async getWebsites(
     params?: Umami.WebsiteSearchParams,
-  ): Promise<ApiResponse<Umami.SearchResult<Umami.Website[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites`, params);
   }
 
-  async getWebsiteActive(websiteId: string): Promise<ApiResponse<Umami.WebsiteActive>> {
+  async getWebsiteActive(websiteId: string): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/active`);
   }
 
-  async getWebsiteReports(websiteId: string): Promise<ApiResponse<Umami.Report[]>> {
+  async getWebsiteReports(websiteId: string): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/reports`);
   }
 
   async getWebsiteValues(
     websiteId: string,
     params: { startAt: number; endAt: number },
-  ): Promise<ApiResponse<any>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/values`, params);
   }
 
@@ -250,7 +250,7 @@ export class UmamiApiClient {
       endAt: string;
       query?: string;
     },
-  ): Promise<ApiResponse<SearchResult<Umami.WebsiteEvent[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/events`, params);
   }
 
@@ -260,7 +260,7 @@ export class UmamiApiClient {
       startAt: string;
       endAt: string;
     },
-  ): Promise<ApiResponse<SearchResult<Umami.WebsiteSession[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/sessions`, params);
   }
 
@@ -270,7 +270,7 @@ export class UmamiApiClient {
       startAt: string;
       endAt: string;
     },
-  ): Promise<ApiResponse<Umami.WebsiteSessionWeekly>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/sessions/weekly`, params);
   }
 
@@ -292,14 +292,14 @@ export class UmamiApiClient {
       region?: string;
       city?: string;
     },
-  ): Promise<ApiResponse<Umami.WebsiteSessionStats>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/sessions/stats`, params);
   }
 
   async getWebsiteSession(
     websiteId: string,
     sessionId: string,
-  ): Promise<ApiResponse<SearchResult<Umami.WebsiteSession>>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/sessions/${sessionId}`);
   }
 
@@ -310,14 +310,14 @@ export class UmamiApiClient {
       startAt: string;
       endAt: string;
     },
-  ): Promise<ApiResponse<SearchResult<Umami.SessionActivity[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/sessions/${sessionId}/activity`, params);
   }
 
   async getSessionData(
     websiteId: string,
     sessionId: string,
-  ): Promise<ApiResponse<SearchResult<Umami.SessionData[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/sessions/${sessionId}/properties`);
   }
 
@@ -339,7 +339,7 @@ export class UmamiApiClient {
       region?: string;
       city?: string;
     },
-  ): Promise<ApiResponse<Umami.WebsiteEventMetric[]>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/events/series`, params);
   }
 
@@ -363,7 +363,7 @@ export class UmamiApiClient {
       limit?: number;
       tag?: string;
     },
-  ): Promise<ApiResponse<SearchResult<Umami.WebsiteMetric[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/metrics`, params);
   }
 
@@ -385,7 +385,7 @@ export class UmamiApiClient {
       city?: string;
       tag?: string;
     },
-  ): Promise<ApiResponse<Umami.WebsitePageviews>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/pageviews`, params);
   }
 
@@ -407,43 +407,43 @@ export class UmamiApiClient {
       city?: string;
       tag?: string;
     },
-  ): Promise<ApiResponse<Umami.WebsiteStats>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/stats`, params);
   }
 
-  async createTeam(data: { name: string; domain: string }): Promise<ApiResponse<Umami.Team>> {
+  async createTeam(data: { name: string; domain: string }): Promise<ApiResponse> {
     return this.post(`teams`, data);
   }
 
-  async getTeam(teamId: string): Promise<ApiResponse<Umami.Team>> {
+  async getTeam(teamId: string): Promise<ApiResponse> {
     return this.get(`teams/${teamId}`);
   }
 
   async getTeams(
     params?: Umami.TeamSearchParams,
-  ): Promise<ApiResponse<SearchResult<Umami.Team[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`teams`, params);
   }
 
-  async joinTeam(data: { accessCode: string }): Promise<ApiResponse<Umami.Team>> {
+  async joinTeam(data: { accessCode: string }): Promise<ApiResponse> {
     return this.post(`teams/join`, data);
   }
 
   async getTeamUsers(
     teamId: string,
     params?: Umami.UserSearchParams,
-  ): Promise<ApiResponse<SearchResult<Umami.User[]>>> {
+  ): Promise<ApiResponse> {
     return this.get(`teams/${teamId}/users`, params);
   }
 
-  async getTeamUser(teamId: string, userId: string): Promise<ApiResponse<Umami.User>> {
+  async getTeamUser(teamId: string, userId: string): Promise<ApiResponse> {
     return this.get(`teams/${teamId}/users/${userId}`);
   }
 
   async createTeamUser(
     teamId: string,
     data: { userId: string; role: string },
-  ): Promise<ApiResponse<Umami.TeamUser>> {
+  ): Promise<ApiResponse> {
     return this.post(`teams/${teamId}/users`, data);
   }
 
@@ -451,29 +451,29 @@ export class UmamiApiClient {
     teamId: string,
     userId: string,
     data: { role: string },
-  ): Promise<ApiResponse<Umami.TeamUser>> {
+  ): Promise<ApiResponse> {
     return this.post(`teams/${teamId}/users/${userId}`, data);
   }
 
-  async deleteTeamUser(teamId: string, userId: string): Promise<ApiResponse<Umami.Empty>> {
+  async deleteTeamUser(teamId: string, userId: string): Promise<ApiResponse> {
     return this.del(`teams/${teamId}/users/${userId}`);
   }
 
   async getTeamWebsites(
     teamId: string,
     params?: Umami.WebsiteSearchParams,
-  ): Promise<ApiResponse<Umami.SearchResult<Umami.SearchResult<Umami.Website[]>>>> {
+  ): Promise<ApiResponse> {
     return this.get(`teams/${teamId}/websites`, params);
   }
 
   async createTeamWebsite(
     teamId: string,
     data: { name: string; domain: string; shareId: string },
-  ): Promise<ApiResponse<Umami.Team>> {
+  ): Promise<ApiResponse> {
     return this.post(`teams/${teamId}/websites`, data);
   }
 
-  async deleteTeamWebsite(teamId: string, websiteId: string): Promise<ApiResponse<Umami.Empty>> {
+  async deleteTeamWebsite(teamId: string, websiteId: string): Promise<ApiResponse> {
     return this.del(`teams/${teamId}/websites/${websiteId}`);
   }
 
@@ -483,11 +483,11 @@ export class UmamiApiClient {
       name: string;
       accessCode: string;
     },
-  ): Promise<ApiResponse<Umami.Empty>> {
+  ): Promise<ApiResponse> {
     return this.post(`teams/${teamId}`, data);
   }
 
-  async deleteTeam(teamId: string): Promise<ApiResponse<Umami.Empty>> {
+  async deleteTeam(teamId: string): Promise<ApiResponse> {
     return this.del(`teams/${teamId}`);
   }
 
@@ -531,7 +531,7 @@ export class UmamiApiClient {
       endAt: number;
       event?: string;
     },
-  ): Promise<ApiResponse<Umami.WebsiteEventData[]>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/event-data/events`, { websiteId, ...params });
   }
 
@@ -541,7 +541,7 @@ export class UmamiApiClient {
       startAt: number;
       endAt: number;
     },
-  ): Promise<ApiResponse<Umami.WebsiteEventDataStats>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/event-data/stats`, { websiteId, ...params });
   }
 
@@ -553,7 +553,7 @@ export class UmamiApiClient {
       eventName: string;
       propertyName: string;
     },
-  ): Promise<ApiResponse<Umami.WebsiteDataValue[]>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/event-data/values`, { websiteId, ...params });
   }
 
@@ -563,7 +563,7 @@ export class UmamiApiClient {
       startAt: number;
       endAt: number;
     },
-  ): Promise<ApiResponse<Umami.WebsiteDataField[]>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/event-data/fields`, { websiteId, ...params });
   }
 
@@ -573,7 +573,7 @@ export class UmamiApiClient {
       startAt: number;
       endAt: number;
     },
-  ): Promise<ApiResponse<Umami.WebsiteSessionData[]>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/session-data/properties`, { websiteId, ...params });
   }
 
@@ -585,7 +585,7 @@ export class UmamiApiClient {
       eventName: string;
       propertyName: string;
     },
-  ): Promise<ApiResponse<Umami.WebsiteDataValue[]>> {
+  ): Promise<ApiResponse> {
     return this.get(`websites/${websiteId}/session-data/values`, { websiteId, ...params });
   }
 
@@ -708,7 +708,7 @@ export class UmamiApiClient {
     return this.get('heartbeat');
   }
 
-  async executeRoute(url: string, method: string, data: any): Promise<ApiResponse<any>> {
+  async executeRoute(url: string, method: string, data: any): Promise<ApiResponse> {
     const routes = [
       {
         path: /^admin\/users$/,

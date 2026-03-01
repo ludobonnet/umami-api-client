@@ -36,7 +36,6 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "cross-fetch": "^4.1.0",
     "debug": "^4.4.3",
     "next-basics": "^0.40.0",
     "uuid": "^11.0.5"

@@ -1,4 +1,3 @@
-require('cross-fetch/polyfill');
 const apiClient = require('./dist/cjs/index');
 const dotenv = require('dotenv');
 dotenv.config();
